@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\EmployeeController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,26 +15,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
 
-// Admin
-Route::middleware(['auth', 'verified', 'admin'])->group(function () {
-    Route::get('/admin/leave-requests', [LeaveRequestController::class, 'adminIndex'])->name('admin.leave_requests.index');
-});
 
-Route::middleware(['auth', 'verified', 'admin'])->group(function () {
-    Route::get('/admin/leave-requests/{id}/edit', [LeaveRequestController::class, 'edit'])->name('admin.leave_requests.edit');
-    Route::patch('/admin/leave-requests/{id}', [LeaveRequestController::class, 'update'])->name('admin.leave_requests.update');
-});
+Auth::routes();
 
-// Employee
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/employee/leave-requests', [LeaveRequestController::class, 'index'])->name('employee.leave_requests.index');
-});
-
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/employee/leave-requests/create', [LeaveRequestController::class, 'create'])->name('employee.leave_requests.create');
-    Route::post('/employee/leave-requests', [LeaveRequestController::class, 'store'])->name('employee.leave_requests.store');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/home', function () {
+        return view('home');
+    })->name('home');
+    Route::resource('employee', EmployeeController::class);
 });
